@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+
+{% block title %}EOS-Profile{% endblock %}
+
+{% block content %}
+
+{% include 'components/nav.html' %}
+{% load crispy_forms_tags %}
+<!--User-->
+<br><br>
+<div class="container mx-auto">
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-3 pb-4">
+            <div class="card p-4">
+                <h4 class="card-title font-weight-bold text-center">{{ user.username|title }}</h4>
+                <hr>
+                <div class="card-text">
+                    <p class="text-muted mb-0" style="font-size: 12px">Username:</p>
+                    <p>{{ user.username }}</p>
+                    <p class="text-muted mb-0" style="font-size: 12px">Name:</p>
+                    <p>{{ user.first_name }} {{ user.last_name }}</p>
+                    <p class="text-muted mb-0" style="font-size: 12px">Email:</p>
+                    <p>{{ user.email }} </p>
+                    <div>
+                        <div class="text-right">
+                            <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#profileModal">Edit
+                                Profile</button>
+                        </div>
+                        <br>
+                        <div class="text-right">
+                            <a href="/password_change"><button type="button" class="btn btn-outline-primary btn-sm">Change
+                                    Password</button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-9 pb-4">
+            <div class="row">
+                <div class="col-lg-6 my-auto">
+                    <h2 class="font-weight-bold pt-4">Recent Searches</h2>
+                </div>
+                <div class="col-lg-3 my-auto">
+                    <button type="button" class="btn btn-outline-secondary" data-toggle="collapse" href="#history-table"><i class="fas fa-angle-right"></i></button>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="collapse" id="history-table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Search Type</th>
+                                <th scope="col">Search Term</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in recent %}
+                            <tr>
+                                {% if item|length > 2 %}
+                                <td> {{ item.type }} </td>
+                                <td> PatentId-{{item.patentID}}, object-{{item.obj}}, aspect-{{item.aspect}}, description-{{item.desc}}  </td>
+                                {% else %}
+                                <td> {{ item.type }} </td>
+                                <td> {{item.q}} </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6 my-auto">
+                    <h2 class="font-weight-bold pt-4">Saved Items</h2>
+                </div>
+                <div class="col-lg-3 my-auto">
+                    <button type="button" class="btn btn-outline-secondary" data-toggle="collapse" href="#saved-items"><i class="fas fa-angle-right"></i></button>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="collapse" id="saved-items">
+                    <div class="bricklayer">
+                        {% if profile_items|length > 0 %}
+                        {% for p in profile_items %}
+                        <div style="margin-right: 15px; margin-top:10px">
+                            <div class="card" style="width: 15rem; height:auto;" id={{ p.0 }}>
+                                <img class="card-img-top h-50 mh-60 object-fit: scale-down;" src="/{{p.6}}" alt="{{p.1}} - {{p.3}}">
+                                <div class="card-body">
+                                    <p class="card-title">{{p.1}}</p>
+                                    <p class="card-subtitle mb-2 text-muted">{{p.3}}</p>
+                                    <p class="card-text" style="display:none">{{p.5}}</p>
+                                    <p class="card-text" style="display:none">{{p.4}}</p>
+                                    <p class="card-text" style="display:none">{{p.7}}</p>
+                                    <div class="row">
+                                        <div class="col-4 text-center">
+                                        </div>
+                                        <div class="col-2 text-center">
+                                            <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#img-details-Modal" data-whatever="{{item.1}} - {{item.3}}">Sample</button> -->
+                                        </div>
+                                        <div class="col-6 text-center">
+                                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#img-details-Modal"
+                                                data-card-id="{{p.0}}">See More..</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="col-sm-12 col-md-6 col-lg-4 pb-4">
+                                                    <div class="h-100">
+                                                        <img src="/{{p.6}}" class="card-img-top" alt="{{p.1}} - {{p.3}}"
+                                                            style="width: auto; height: 225px; object-fit: scale-down;">
+                                                        <div class="card-body">
+                                                            <p class="card-title">{{ p.1 }}</p>
+                                                            <p class="card-text text-muted" style="font-size:12px">{{ p.3 }}</p>
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+                        {% endfor %}
+                        {% else %}
+                        <div class="col-sm-12 col-md-6 col-lg-4 pb-4">
+                            <p>Sorry!! Currently No Search History is available for you</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Edit user modal-->
+<div class="modal fade" tabindex="-1" id="profileModal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Profile</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ user_form|crispy }}
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- See More Modal to display more about the searched image -->
+<div class="modal fade" id="img-details-Modal" tabindex="-1" role="dialog" aria-labelledby="img-details-ModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="img-details-ModalLabel">New message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <figure class="figure">
+                        <img id="modal-img" src="" alt="modal image" class="figure-img img-fluid rounded">
+                        <figcaption class="figure-caption" id="modal-img-caption">A caption for the above image.
+                        </figcaption>
+                    </figure>
+                    <p class="" id="modal-Obj"><b>Object</b>: </p>
+                    <p class="" id="modal-Aspect"><b>Aspect</b>: </p>
+                    <p class="" id="modal-Description"><b>Description</b>: </p>
+                    <button type="button" id="modal-removeItem" class="btn btn-link" value="" onclick="removeItemFromProfile(this)" data-dismiss="modal">Remove from list</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+    //document.getElementById("save-submit").addEventListener("click", saveItem2Profile(this));
+    $('#img-details-Modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var id = button.data('card-id'); // Extract info from data-* attributes
+        var elements = document.getElementById(id).children;
+        var imgSrc = elements[0].src;
+        var imgElements = elements[1].children;
+        var imgPatentId = imgElements[0].textContent;
+        var imgFig = imgElements[1].textContent;
+        var imgObject = imgElements[2].textContent;
+        var imgAspect = imgElements[3].textContent;
+        var imgDesc = imgElements[4].textContent;
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this);
+        modal.find('.modal-title').text('Patent Image : ' + imgPatentId + ' - ' + imgFig);
+        document.getElementById('modal-img').src = imgSrc;
+        document.getElementById('modal-img-caption').textContent = imgPatentId + ' - ' + imgFig;
+        document.getElementById('modal-Obj').textContent = 'Object: ' + imgObject;
+        document.getElementById('modal-Aspect').textContent = 'Aspect: ' + imgAspect;
+        document.getElementById('modal-Description').textContent = 'Description: ' + imgDesc;
+        document.getElementById('modal-removeItem').value = id;
+    })
+
+    function scrollToTop() {
+            window.scrollTo(0, 0);
+    }
+    
+    function appendMessageAlert(alertClass, alertString) {
+            var span = document.createElement("span");
+            span.setAttribute('aria-hidden', 'true');
+            span.textContent = '×';
+            var btn = document.createElement("button");
+            btn.setAttribute('type', 'button');
+            btn.setAttribute('class', 'close');
+            btn.setAttribute('data-dismiss', 'alert');
+            btn.setAttribute('aria-label', 'Close');
+            btn.appendChild(span);
+            var alert = document.createElement('div');
+            alert.className = 'alert ' + alertClass + ' alert-dismissible m-0 p-3';
+            alert.setAttribute('role', 'alert');
+            alert.appendChild(btn);
+            alert.append(alertString);
+            var messageAlert = document.createElement("div");
+            messageAlert.class = "container-fluid mx-0 p-0 sticky-top";
+            messageAlert.appendChild(alert);
+            document.getElementById('messages-panel').appendChild(messageAlert);
+    }
+
+    function removeItemFromProfile(elm) {
+            var token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            var reqData = {
+                e_doc_id: elm.value
+            };
+            console.log(reqData);
+            fetch('{% url "removeItem" %}', {
+                method: 'POST',
+                mode: 'cors',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRFToken': token,
+                },
+                body: JSON.stringify(reqData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response Success, message - ', data.message);
+                    if (data.job === 'success') {
+                        appendMessageAlert('alert-success', data.message);
+                        document.getElementById(elm.value).remove();
+                    } else {
+                        appendMessageAlert('alert-danger', data.message);
+                    }
+                    scrollToTop();
+                })
+                .catch((error) => {
+                    console.error('Error: ', error);
+                    appendMessageAlert('alert-danger', 'Error!!!! Please check with Admin...');
+                    scrollToTop();
+                });
+        }
+</script>
+{% endblock %}

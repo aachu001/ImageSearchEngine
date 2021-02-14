@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+
+{% load filter_utils %}
+
+{% block title %}
+Eye of Sauron Advanced Search
+{% endblock %}
+
+{% block content %}
+{% include 'components/nav.html' %}
+<br>
+<div class="container">
+    <h3>Eye of Sauron Advanced Search</h3>
+    <hr>
+    <!-- Advanced Search form -->
+    <div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group row">
+                <label for="img-patentID" class="col-sm-2 col-form-label">Patent ID</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="img-patentID" id="img-patentID" placeholder="Enter Patent ID">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="img-desc" class="col-sm-2 col-form-label">Description</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="img-desc" id="img-desc" placeholder="Enter Description of the image">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="img-obj" class="col-sm-2 col-form-label">Object</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="img-obj" id="img-obj" placeholder="Enter Object text">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="img-aspect" class="col-sm-2 col-form-label">Aspect</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="img-aspect" id="img-aspect" placeholder="enter Aspect text">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% if results %}
+    <p> We found {{ count }} results for your search <b>'{{ search_term | safe }}'</b>.</p>
+    {% include 'components/pagination_advanced.html' %}
+    <div class="search results">
+        <div class="bricklayer">
+            {% for item in results %}
+            <div style="margin-right: 15px; margin-top:10px">
+                <div class="card" style="width: 15rem; height:auto;" id={{ item.0 }}>
+                    <img class="card-img-top" src="{{item.6}}" alt="Card image cap">
+                    <div class="card-body">
+                        <h6 class="card-title">{{item.1|highlight_search:query.patentID }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">{{item.3}}</h6>
+                        <!---{{item.1}}-->
+                        <p class="card-text" style="display:none">{{item.5|highlight_search:query.obj}}</p>
+                        <p class="card-text" style="display:none">{{item.4|highlight_search:query.aspect}}</p>
+                        <p class="card-text" style="display:none">{{item.7|highlight_search:query.desc}}</p>
+                        <div class="row">
+                            <div class="col-4 text-center">
+                                {% if user.is_authenticated %}
+                                <div class="btn-group" role="group" >
+                                    <input type="hidden" value="{{item.0}}" name="e_doc_id">
+                                    <button type="button" id="save-submit" value="{{item.0}}" onclick="saveItem2Profile(this)"
+                                        class="btn btn-link"style="color: orange"> <i class="far fa-bookmark"></i></button>
+                                        <button type="button" class="btn btn-link"><a id="dnld-img-{{ item.0 }}" href="{{item.6}}" style="color: limegreen" download><i class="fas fa-download"></i></a></button>
+                                        <button type="button" class="btn btn-link" style="color: red"><i class="far fa-heart"></i></i></button>
+                                </div>
+                                {% else %}
+                                <div class="row">
+                                    <a href="accounts/login/" class="btn btn-outline-warning" style="font-size:18px; border-radius: 50%"><i
+                                            class="far fa-bookmark"></i></a>
+                                    <a id="dnld-img-{{ item.0 }}" href="accounts/login/"><i class="fas fa-download"></i></a>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-2 text-center">
+                        
+                            </div>
+                            <div class="col-6 text-center">
+                                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#img-details-Modal"
+                                    data-card-id="{{item.0}}">See More..</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <p> {{item.0}}, {{item.1}}, {{item.2}}, {{item.3}}, {{item.4}} <img src="{{item.5}}"></p>
+                                    <hr> -->
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% include 'components/pagination_advanced.html' %}
+    {% elif not search_term %}
+    <p>Search for images using above fields.</p>
+    {% elif not results %}
+    <p>No results found for search query <b>'{{ search_term | safe }}'</b></p>
+    {% endif %}
+</div>
+<!-- See More Modal to display more about the searched image -->
+<div class="modal fade" id="img-details-Modal" tabindex="-1" role="dialog" aria-labelledby="img-details-ModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="img-details-ModalLabel">New message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <figure class="figure">
+                        <img id="modal-img" src="" alt="modal image" class="figure-img img-fluid rounded">
+                        <figcaption class="figure-caption" id="modal-img-caption">A caption for the above image.
+                        </figcaption>
+                    </figure>
+                    <p class="" id="modal-Obj"><b>Object</b>: </p>
+                    <p class="" id="modal-Aspect"><b>Aspect</b>: </p>
+                    <p class="" id="modal-Description"><b>Description</b>: </p>
+                    <button type="button" class="btn btn-success"><a id="modal-download-img" href="#" style="color: black" download>Download
+                            <i class="fas fa-download"></i></a></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+    //document.getElementById("save-submit").addEventListener("click", saveItem2Profile(this));
+    $('#img-details-Modal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var id = button.data('card-id'); // Extract info from data-* attributes
+            var elements = document.getElementById(id).children;
+            var imgSrc = elements[0].src;
+            var imgElements = elements[1].children;
+            var imgPatentId = imgElements[0].textContent;
+            var imgFig = imgElements[1].textContent;
+            var imgObject = imgElements[2].textContent;
+            var imgAspect = imgElements[3].textContent;
+            var imgDesc = imgElements[4].textContent;
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this);
+            modal.find('.modal-title').text('Patent Image : ' + imgPatentId + ' - ' + imgFig);
+            document.getElementById('modal-img').src = imgSrc;
+            document.getElementById('modal-img-caption').textContent = imgPatentId + ' - ' + imgFig;
+            document.getElementById('modal-Obj').textContent = 'Object: ' + imgObject;
+            document.getElementById('modal-Aspect').textContent = 'Aspect: ' + imgAspect;
+            document.getElementById('modal-Description').textContent = 'Description: ' + imgDesc;
+            document.getElementById('modal-download-img').href = imgSrc;
+    })
+
+    function scrollToTop() {
+        window.scrollTo(0, 0);
+    }
+
+    function appendMessageAlert(alertClass, alertString) {
+        var span = document.createElement("span");
+        span.setAttribute('aria-hidden', 'true');
+        span.textContent = '×';
+        var btn = document.createElement("button");
+        btn.setAttribute('type', 'button');
+        btn.setAttribute('class', 'close');
+        btn.setAttribute('data-dismiss', 'alert');
+        btn.setAttribute('aria-label', 'Close');
+        btn.appendChild(span);
+        var alert = document.createElement('div');
+        alert.className = 'alert ' + alertClass + ' alert-dismissible m-0 p-3';
+        alert.setAttribute('role', 'alert');
+        alert.appendChild(btn);
+        alert.append(alertString);
+        var messageAlert = document.createElement("div");
+        messageAlert.class = "container-fluid mx-0 p-0 sticky-top";
+        messageAlert.appendChild(alert);
+        document.getElementById('messages-panel').appendChild(messageAlert);
+    }
+
+    function saveItem2Profile(elm) {
+        var token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        var reqData = { e_doc_id: elm.value , 
+            query:{
+                type: "advanced",
+                patentID : "{{ query.patentID}}",
+                obj: "{{ query.obj}}",
+                aspect: "{{query.aspect}}",
+                desc: "{{query.desc}}"
+        }};
+        console.log(reqData);
+        fetch('{% url "saveItem" %}', {
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRFToken': token,
+            },
+            body: JSON.stringify(reqData),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response Success, message - ', data.message);
+                if (data.job === 'success'){
+                    appendMessageAlert('alert-success', data.message);
+                }else{
+                    appendMessageAlert('alert-danger', data.message);
+                }
+                scrollToTop();
+            })
+            .catch((error) => {
+                console.error('Error: ', error);
+                appendMessageAlert('alert-danger', 'Error!!!! Please check with Admin...');
+                scrollToTop();
+            });
+
+    }
+</script>
+{% endblock %}

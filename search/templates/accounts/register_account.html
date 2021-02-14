@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}EOS-Registration{% endblock %}
+
+{% block content %}
+
+{% include 'components/nav.html' %}
+<br>
+<div class="container">
+    <p>Hello {{user.username}},</p>
+    <p>Congratulations for successful registration !!!</p>
+    <p>An email has been sent to your registered email address <b>{{ user.email }}</b>. Please confirm from your email address to complete the registration.</p>
+</div>
+
+{% endblock %}

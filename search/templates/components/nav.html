@@ -1,0 +1,51 @@
+<!--Navbar-->
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark justify-content-end">
+    <a class="navbar-brand mr-auto" href="/">EOS</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+        aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse flex-grow-0" id="navbarText">
+        {% if user.is_authenticated and user.is_active %}
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Search Options
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/search">Search</a>
+                    <a class="dropdown-item" href="/advsearch">Advanced Search</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/indexData">Add New Data</a>
+                </div>
+            </li>
+            <!-- <li class="nav-item">
+                <a class="nav-link" href="/advsearch">Advanced Search</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/search">Search</a>
+            </li> -->
+        </ul>
+        <!-- <ul class="navbar-nav mr-auto" style="float:right;">
+            <li><a href="/accounts/logout">Logout</a></li>
+            <li><a class="btn btn-sm btn-outline-primary m-2" href="/accounts/profile">{{user.username|title}}</a></li>
+        </ul> -->
+        <ul class="navbar-nav text-right">
+            <li class="nav-item">
+                <a class="nav-link" href="/accounts/profile"><button type="button" class="btn btn-warning">Welcome, {{user.username}}</button></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/accounts/logout"><button type="button" class="btn btn-danger">Logout</button></a>
+            </li>
+        </ul>
+        {% else %}
+
+            <!-- <li class="nav-item">
+                <a class="nav-link" href="/accounts/login">Login</a>
+            </li> -->
+
+        {% endif %}
+    </div>
+</nav>
+{% include 'components/messages.html' %}

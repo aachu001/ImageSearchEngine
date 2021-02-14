@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% load filter_utils %}
+
+{% block title %}
+Eye of Sauron Search
+{% endblock %}
+
+{% block content %}
+{% include 'components/nav.html' %}
+<br>
+<div class="container">
+    <h3>Eye of Sauron Search</h3>
+    <hr>
+    <!-- Search form -->
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group row">
+            <div class="col-sm-12">
+                {% if query.name %}
+                    <input type="text" name="name" class="form-control" id="searchField1" value="{{ query.name }}">
+                {% else %}
+                    <input type="text" name="name" class="form-control" id="searchField1" placeholder="Enter Search String...">
+                {% endif %}   
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-12">
+                {% if query.gender %}
+                    <input type="text" name="gender" class="form-control" id="searchField2" value="{{ query.gender }}">
+                {% else %}
+                    <input type="text" name="gender" class="form-control" id="searchField2" placeholder="Enter gender m or f...">
+                {% endif %}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-12">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+    {% if results %}
+        <p> We found {{ count }} results for your search '{{ search_term }}'.</p>
+        {% include 'components/pagination_test.html' %}
+        <div class="search results">
+            {% for item in results %}
+            <p> {{item.0|highlight_search:query.name }}, {{item.1}}, {{ item.2|highlight_search:query.gender }}, {{item.3}}  </p>
+            <hr>
+            {% endfor %}
+        </div>
+        {% include 'components/pagination_test.html' %}
+    {% elif not search_term %}
+        <h3>Insert your search above.</h3>
+    {% elif not results %}
+        <p>No results found for search query {{ search_term }}</p>
+    {% endif %}
+</div>
+{% endblock %}

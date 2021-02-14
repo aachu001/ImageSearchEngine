@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Eye of Sauron Home
+{% endblock %}
+
+{% block content %}
+{% include 'components/nav.html' %}
+<br>
+<div class="container">
+    <!-- Jumbotron -->
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">Eye of Sauron!</h1>
+            <p class="lead">Image Search Engine powered by Django, Elastic Search.</p>
+            <hr class="my-4">
+            <p class="lead">Searches for the patent figures from the repository based on the the search string.</p>
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="/search" role="button">Search</a>
+                <a class="btn btn-primary btn-lg" href="/advsearch" role="button">Advanced Search</a>
+                <a class="btn btn-primary btn-lg" href="/indexData" role="button">Index New Data</a>
+                <a class="btn btn-primary btn-lg" href="/accounts/profile" role="button">Profile</a>
+            </p>
+        </div>
+    </div>
+    <!-- Search form -->
+    <!-- <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search.." aria-label="Recipient's username"
+            aria-describedby="basic-addon2">
+        <div class="input-group-append">
+            <button class="btn btn-outline-primary" type="button">Search</button>
+        </div>
+    </div> -->
+    <!-- <button class="btn btn-primary btn-rounded btn-sm my-0">Advanced Search</button> -->
+    <!-- <input class="form-control" type="text" placeholder="Search" aria-label="Search"> -->
+</div>
+{% endblock %}

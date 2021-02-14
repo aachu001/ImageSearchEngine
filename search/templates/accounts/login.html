@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}EOS-Login{% endblock %}
+
+{% block content %}
+
+{% include 'components/nav.html' %}
+
+{% load crispy_forms_tags %}
+
+<!--Login-->
+<div class="container py-5">
+    <h1>Login</h1>
+    <form method="POST" id="login-form">
+        {% csrf_token %}
+        {{ login_form|crispy }}
+        <br>
+        <!-- ReCAPTCHA -->
+        <div class="g-recaptcha" data-sitekey={{ siteKey }}></div>
+        <br>
+        <button class="btn btn-primary" type="submit">Login</button>
+    </form>
+    <p><a href="/password_reset">forgot password</a></p>
+    <p class="text-center">Don't have an account? <a href="/accounts/signup/">Create an account</a>.</p>
+</div>
+<!-- <script>
+    grecaptcha.ready(function () {
+        grecaptcha.execute('6Lfxm-IZAAAAAIU5fzahRvso4CBNz0r5C4jM9z16', { action: 'Login' })
+            .then(function (token) {
+                var captcha = document.createElement("input");
+                captcha.type = "hidden";
+                captcha.name = "g-recaptcha-response";
+                captcha.value = token;
+                // document.createElement(`<input type="hidden" name="g-recaptcha-response" value=${token}`)
+                document.getElementById("login-form").appendChild(captcha);
+                    });
+            });
+</script> -->
+{% endblock %}
