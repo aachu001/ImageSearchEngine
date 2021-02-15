@@ -22,7 +22,7 @@ TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'o4izk5@pqrxt(ez(pyoj!5!e+=3dwxc5uvghxw##**cl4_wp*q'
+SECRET_KEY = 'o4izk5@pqrxt(ez(pyoj!5!e+=3dwxc5uvghxw##**l4_wp*q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -140,8 +140,8 @@ IMAGE_DATA_ROOT = os.path.join(MEDIA_ROOT, 'images')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  
 MAILER_EMAIL_BACKEND = EMAIL_BACKEND  
 EMAIL_HOST = 'smtp.gmail.com'  
-EMAIL_HOST_PASSWORD = 'anoopreddy1997'  
-EMAIL_HOST_USER = 'anoopreddyananthula@gmail.com'  
+EMAIL_HOST_PASSWORD = ''  
+EMAIL_HOST_USER = 'abhi158.achugatla@gmail.com'  
 EMAIL_PORT = 465  
 EMAIL_USE_SSL = True  
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
@@ -168,5 +168,5 @@ ELASTICSEARCH_DSL = {
 
 
 # Google ReCaptcha
-GOOGLE_RECAPTCHA_SECRET_KEY = '6LdHn-IZAAAAAP21ciE2njD3LRsI66qZHmcQoMNF'
+GOOGLE_RECAPTCHA_SECRET_KEY = '6LdHn-IZAAAAAP21ciE2njD3LRsI66qZHmcQoMN'
 GOOGLE_RECAPTCHA_SITE_KEY = '6LdHn-IZAAAAAGYepR4RVj2btwNcU9y4Dbq0LWqq'
